@@ -1,5 +1,6 @@
 import { MultiSelect, TextInput } from '@mantine/core';
 import React, { Dispatch } from 'react';
+import NoData from '../assets/no_data.png';
 export default function TodoLayout({
   value,
   setValue,
@@ -50,8 +51,15 @@ export default function TodoLayout({
           data={tagsData}
         />
       </div>
-      <div className='grid gap-y-10 grid-cols-fluid'>
-        {noteList ? (
+      <div
+        className='grid gap-y-10 grid-cols-fluid'
+        // className={`${
+        //   noteList?.length
+        //     ? 'grid gap-y-10 grid-cols-fluid'
+        //     : 'flex justify-center items-center'
+        // }`}
+      >
+        {noteList?.length ? (
           noteList?.map((note) => (
             <div className='category-card' key={note?.id}>
               <div className='content  overflow-hidden'>
@@ -89,7 +97,7 @@ export default function TodoLayout({
             </div>
           ))
         ) : (
-          <img src='../assets/no_data.png' alt='data not found' />
+          <img src={NoData} alt='data not found' />
         )}
       </div>
     </div>

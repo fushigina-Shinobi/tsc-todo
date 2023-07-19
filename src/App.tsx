@@ -5,6 +5,7 @@ import NotesModal from './components/notesModal';
 function App() {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [value, setValue] = useState<string>('');
+  const [body, setBody] = useState<string>('');
   const [noteId, setNoteId] = useState<number | null>(null);
   const [tagsData, setTagsData] = useState<{ value: string; label: string }[]>(
     []
@@ -77,6 +78,10 @@ function App() {
         setNoteList={setNoteList}
         setNoteId={setNoteId}
         noteId={noteId}
+        value={value}
+        setValue={setValue}
+        body={body}
+        setBody={setBody}
       />
     </div>
   );

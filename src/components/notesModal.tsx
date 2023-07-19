@@ -1,4 +1,5 @@
 import { Modal, MultiSelect, TextInput, Textarea } from '@mantine/core';
+import { useEffect } from 'react';
 const NotesModal = ({
   openModal,
   setOpenModal,
@@ -8,7 +9,15 @@ const NotesModal = ({
   setNoteList,
   setNoteId,
   noteId,
+  setValue,
+  value,
+  body,
+  setBody,
 }: {
+  value: string;
+  setValue: (value: string) => void;
+  body: string;
+  setBody: (value: string) => void;
   openModal: boolean;
   setOpenModal: (value: boolean) => void;
   tagsData: { value: string; label: string }[];
@@ -68,13 +77,47 @@ const NotesModal = ({
     setNoteId(null);
     setOpenModal(false);
   };
+
+  useEffect(() => {
+    const NoteData = localStorage.getItem('NoteList');
+    let updatedNoteData = [] as {
+      id: number;
+      title: string;
+      tags: string[];
+      body: string;
+    }[];
+    if (NoteData) {
+      updatedNoteData = JSON.parse(NoteData);
+    }
+    if (updatedNoteData) {
+      updatedNoteData?.filter((note) => {
+        if (note?.id === noteId) {
+          setTagsData(note?.tags.map((tag) => ({ value: tag, label: tag })));
+          setValue(note?.title);
+          setBody(note?.body);
+        }
+        return note;
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [noteId]);
+
   return (
     <>
       <Modal
         opened={openModal}
         onClose={() => {
+          const existingData = localStorage.getItem('TagList');
           setOpenModal(false);
           setNoteId(null);
+          //tags list
+          let updatedData = [] as { value: string; label: string }[];
+          if (existingData) {
+            updatedData = JSON.parse(existingData);
+          }
+          setTagsData(updatedData);
+          setValue('');
+          setBody('');
         }}
         title='Create Notes'
         centered
@@ -85,11 +128,10 @@ const NotesModal = ({
           <div className='flex flex-col gap-y-6 justify-center items-center mb-6'>
             <div className='flex gap-x-6 items-center w-full'>
               <TextInput
-                // value={value}
+                defaultValue={value}
                 placeholder='type here'
                 name='title'
                 label='Title'
-                // onChange={(e) => setValue(e.currentTarget.value)}
                 className='w-2/4'
                 classNames={{ label: 'text-2xl font-normal' }}
               />
@@ -101,6 +143,7 @@ const NotesModal = ({
                 label='Tags'
                 searchable
                 creatable
+                defaultValue={tagsData.map((item) => item.value)}
                 getCreateLabel={(query) => `+ Create ${query}`}
                 onCreate={(query) => {
                   const item = { value: query, label: query };
@@ -110,11 +153,17 @@ const NotesModal = ({
                   });
                   return item;
                 }}
+                // onChange={(e) => setTagsData(e.values)}
                 className='w-2/4'
                 classNames={{ label: 'text-2xl font-normal' }}
               />
             </div>
-            <Textarea name='body' minRows={15} className='w-full' />
+            <Textarea
+              name='body'
+              minRows={15}
+              className='w-full'
+              defaultValue={body}
+            />
           </div>
           <div className='flex justify-center items-center'>
             <button
