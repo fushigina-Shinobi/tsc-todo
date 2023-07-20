@@ -48,13 +48,29 @@ const NotesModal = ({
     if (NoteData) {
       updatedNoteData = JSON.parse(NoteData);
     }
-
-    const updatedNote = [
-      ...updatedNoteData,
-      { id: timestamp, title, tags, body },
-    ];
-    setNoteList(updatedNote);
-    localStorage.setItem('NoteList', JSON.stringify(updatedNote));
+    let updatedNote = [] as {
+      id: number;
+      title: string;
+      tags: string[];
+      body: string;
+    }[];
+    if (noteId) {
+      const editNote = updatedNoteData?.map(
+        (note: { id: number; title: string; tags: string[]; body: string }) => {
+          if (note?.id === noteId) {
+            return { ...note, title, tags, body };
+          }
+          return note;
+        }
+      );
+      setNoteList(editNote);
+      localStorage.setItem('NoteList', JSON.stringify(editNote));
+    } else {
+      updatedNote = [...updatedNoteData, { id: timestamp, title, tags, body }];
+      console.log('updatedNote:', updatedNote);
+      setNoteList(updatedNote);
+      localStorage.setItem('NoteList', JSON.stringify(updatedNote));
+    }
 
     //tags list
     const existingData = localStorage.getItem('TagList');
@@ -89,7 +105,16 @@ const NotesModal = ({
     if (NoteData) {
       updatedNoteData = JSON.parse(NoteData);
     }
-    if (updatedNoteData) {
+    const existingData = localStorage.getItem('TagList');
+    let updatedData = [];
+
+    if (existingData) {
+      updatedData = JSON.parse(existingData);
+    }
+
+    const getTags = [...updatedData];
+    if (noteId && updatedNoteData) {
+      console.log(getTags, 'gettags');
       updatedNoteData?.filter((note) => {
         if (note?.id === noteId) {
           setTagsData(note?.tags.map((tag) => ({ value: tag, label: tag })));

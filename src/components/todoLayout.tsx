@@ -1,30 +1,19 @@
 import { MultiSelect, TextInput } from '@mantine/core';
-import React, { Dispatch } from 'react';
 import NoData from '../assets/no_data.png';
 export default function TodoLayout({
   value,
   setValue,
   tagsData,
-  setTagsData,
   noteList,
-  setNoteList,
   setOpenModal,
   setNoteId,
-  noteId,
 }: {
   value: string;
   setValue: (value: string) => void;
   tagsData: { value: string; label: string }[];
-  setTagsData: Dispatch<{ value: string; label: string }[]>;
   noteList: { id: number; title: string; tags: string[]; body: string }[];
-  setNoteList: React.Dispatch<
-    React.SetStateAction<
-      { id: number; title: string; tags: string[]; body: string }[]
-    >
-  >;
   setOpenModal: (value: boolean) => void;
   setNoteId: (value: number | null) => void;
-  noteId: number | null;
 }) {
   return (
     <div className='flex flex-col gap-y-10 justify-center items-center'>
@@ -71,15 +60,13 @@ export default function TodoLayout({
                 ))}
                 <p className='text-ellipsis'>{note.body}</p>
               </div>
-              <button>
-                <span
-                  onClick={() => {
-                    setOpenModal(true);
-                    setNoteId(note?.id);
-                  }}
-                >
-                  Learn more
-                </span>
+              <button
+                onClick={() => {
+                  setOpenModal(true);
+                  setNoteId(note?.id);
+                }}
+              >
+                <span>Learn more</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   height='24px'

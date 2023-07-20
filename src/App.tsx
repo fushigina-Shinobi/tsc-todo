@@ -60,12 +60,9 @@ function App() {
             value={value}
             setValue={setValue}
             tagsData={tagsData}
-            setTagsData={setTagsData}
-            noteList={noteList}
-            setNoteList={setNoteList}
             setOpenModal={setOpenModal}
             setNoteId={setNoteId}
-            noteId={noteId}
+            noteList={noteList}
           />
         </div>
       </div>
