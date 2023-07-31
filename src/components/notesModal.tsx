@@ -1,12 +1,13 @@
 import { Modal, MultiSelect, TextInput, Textarea } from '@mantine/core';
+import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
+import { closeModal } from '../features/modal/modalSlice';
+import { AppDispatch, RootState } from '../store';
+import { setNoteList } from '../features/todo/todoSlice';
 const NotesModal = ({
-  openModal,
-  setOpenModal,
+  // openModal,
   tagsData,
   setTagsData,
-  noteList,
-  setNoteList,
   setNoteId,
   noteId,
   setValue,
@@ -18,21 +19,23 @@ const NotesModal = ({
   setValue: (value: string) => void;
   body: string;
   setBody: (value: string) => void;
-  openModal: boolean;
-  setOpenModal: (value: boolean) => void;
   tagsData: { value: string; label: string }[];
   setTagsData: React.Dispatch<
     React.SetStateAction<{ value: string; label: string }[]>
   >;
-  noteList: { id: number; title: string; tags: string[]; body: string }[];
-  setNoteList: React.Dispatch<
-    React.SetStateAction<
-      { id: number; title: string; tags: string[]; body: string }[]
-    >
-  >;
+  // noteList: { id: number; title: string; tags: string[]; body: string }[];
+  // setNoteList: React.Dispatch<
+  //   React.SetStateAction<
+  //     { id: number; title: string; tags: string[]; body: string }[]
+  //   >
+  // >;
   setNoteId: (value: number | null) => void;
   noteId: number | null;
 }) => {
+  const dispatch: AppDispatch = useDispatch();
+  const { isOpen } = useSelector((store: RootState) => store.modal);
+
+  // function to handle the submit
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
@@ -48,12 +51,7 @@ const NotesModal = ({
     if (NoteData) {
       updatedNoteData = JSON.parse(NoteData);
     }
-    let updatedNote = [] as {
-      id: number;
-      title: string;
-      tags: string[];
-      body: string;
-    }[];
+    let updatedNote = [];
     if (noteId) {
       const editNote = updatedNoteData?.map(
         (note: { id: number; title: string; tags: string[]; body: string }) => {
@@ -63,12 +61,12 @@ const NotesModal = ({
           return note;
         }
       );
-      setNoteList(editNote);
+      dispatch(setNoteList(editNote));
       localStorage.setItem('NoteList', JSON.stringify(editNote));
     } else {
       updatedNote = [...updatedNoteData, { id: timestamp, title, tags, body }];
       console.log('updatedNote:', updatedNote);
-      setNoteList(updatedNote);
+      // dispatch(setNoteList(updatedNote));
       localStorage.setItem('NoteList', JSON.stringify(updatedNote));
     }
 
@@ -91,7 +89,7 @@ const NotesModal = ({
 
     // Close the modal if needed
     setNoteId(null);
-    setOpenModal(false);
+    dispatch(closeModal());
   };
 
   useEffect(() => {
@@ -130,10 +128,10 @@ const NotesModal = ({
   return (
     <>
       <Modal
-        opened={openModal}
+        opened={isOpen}
         onClose={() => {
           const existingData = localStorage.getItem('TagList');
-          setOpenModal(false);
+          dispatch(closeModal());
           setNoteId(null);
           //tags list
           let updatedData = [] as { value: string; label: string }[];

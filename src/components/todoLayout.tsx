@@ -1,20 +1,22 @@
 import { MultiSelect, TextInput } from '@mantine/core';
 import NoData from '../assets/no_data.png';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store';
+import { openModal } from '../features/modal/modalSlice';
 export default function TodoLayout({
   value,
   setValue,
   tagsData,
-  noteList,
-  setOpenModal,
   setNoteId,
 }: {
   value: string;
   setValue: (value: string) => void;
   tagsData: { value: string; label: string }[];
-  noteList: { id: number; title: string; tags: string[]; body: string }[];
-  setOpenModal: (value: boolean) => void;
   setNoteId: (value: number | null) => void;
 }) {
+  const noteList = useSelector((store: RootState) => store.notes);
+  const dispatch: AppDispatch = useDispatch();
+
   return (
     <div className='flex flex-col gap-y-10 justify-center items-center'>
       <div className='flex gap-x-6 w-full ml-12'>
@@ -22,7 +24,7 @@ export default function TodoLayout({
           value={value}
           placeholder='search title'
           label='Title'
-          onChange={(e) => setValue(e.currentTarget.value)}
+          // onChange={(e: string) => setValue(e.currentTarget.value as string)}
           className='w-[44%]'
           classNames={{ label: 'text-2xl font-normal', input: 'text-lg h-10' }}
         />
@@ -62,7 +64,7 @@ export default function TodoLayout({
               </div>
               <button
                 onClick={() => {
-                  setOpenModal(true);
+                  dispatch(openModal());
                   setNoteId(note?.id);
                 }}
               >

@@ -2,32 +2,31 @@ import './index.css';
 import TodoLayout from './components/todoLayout';
 import { useEffect, useState } from 'react';
 import NotesModal from './components/notesModal';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from './store';
+import { openModal } from './features/modal/modalSlice';
+import { setNoteList } from './features/todo/todoSlice';
 function App() {
-  const [openModal, setOpenModal] = useState<boolean>(false);
   const [value, setValue] = useState<string>('');
   const [body, setBody] = useState<string>('');
   const [noteId, setNoteId] = useState<number | null>(null);
   const [tagsData, setTagsData] = useState<{ value: string; label: string }[]>(
     []
   );
-  const [noteList, setNoteList] = useState<
-    { id: number; title: string; tags: string[]; body: string }[]
-  >([]);
+  // const [noteList, setNoteList] = useState<
+  //   { id: number; title: string; tags: string[]; body: string }[]
+  // >([]);
+  const dispatch: AppDispatch = useDispatch();
 
   const NoteData = localStorage.getItem('NoteList');
   const existingData = localStorage.getItem('TagList');
   useEffect(() => {
     //notes list
-    let updatedNoteData = [] as {
-      id: number;
-      title: string;
-      tags: string[];
-      body: string;
-    }[];
+    let updatedNoteData = [];
     if (NoteData) {
       updatedNoteData = JSON.parse(NoteData);
     }
-    setNoteList(updatedNoteData);
+    dispatch(setNoteList(updatedNoteData));
 
     //tags list
     let updatedData = [] as { value: string; label: string }[];
@@ -46,7 +45,7 @@ function App() {
           <div className='flex gap-x-4'>
             <button
               className='px-10 py-4  hover:bg-tertiary bg-primary text-offWhite rounded-lg'
-              onClick={() => setOpenModal(true)}
+              onClick={() => dispatch(openModal())}
             >
               Create
             </button>
@@ -60,19 +59,13 @@ function App() {
             value={value}
             setValue={setValue}
             tagsData={tagsData}
-            setOpenModal={setOpenModal}
             setNoteId={setNoteId}
-            noteList={noteList}
           />
         </div>
       </div>
       <NotesModal
-        openModal={openModal}
-        setOpenModal={setOpenModal}
         tagsData={tagsData}
         setTagsData={setTagsData}
-        noteList={noteList}
-        setNoteList={setNoteList}
         setNoteId={setNoteId}
         noteId={noteId}
         value={value}
