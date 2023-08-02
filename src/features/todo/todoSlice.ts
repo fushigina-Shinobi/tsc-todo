@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice,PayloadAction } from '@reduxjs/toolkit'
 // import type { PayloadAction } from '@reduxjs/toolkit'
 // import type { RootState } from '../../store'
 
@@ -14,9 +14,9 @@ export const todoSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    setNoteList: (state) => {
-      console.log(state, 'check state')
-    },
+    setNoteList: (state, action: PayloadAction<NoteList[]>) => {
+      return action.payload;
+    }
     // Use the PayloadAction type to declare the contents of `action.payload`
     // incrementByAmount: (state, action: PayloadAction<number>) => {
     //   state.value += action.payload

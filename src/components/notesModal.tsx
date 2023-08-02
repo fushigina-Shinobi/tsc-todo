@@ -5,7 +5,6 @@ import { closeModal } from '../features/modal/modalSlice';
 import { AppDispatch, RootState } from '../store';
 import { setNoteList } from '../features/todo/todoSlice';
 const NotesModal = ({
-  // openModal,
   tagsData,
   setTagsData,
   setNoteId,
@@ -23,12 +22,6 @@ const NotesModal = ({
   setTagsData: React.Dispatch<
     React.SetStateAction<{ value: string; label: string }[]>
   >;
-  // noteList: { id: number; title: string; tags: string[]; body: string }[];
-  // setNoteList: React.Dispatch<
-  //   React.SetStateAction<
-  //     { id: number; title: string; tags: string[]; body: string }[]
-  //   >
-  // >;
   setNoteId: (value: number | null) => void;
   noteId: number | null;
 }) => {
@@ -65,8 +58,7 @@ const NotesModal = ({
       localStorage.setItem('NoteList', JSON.stringify(editNote));
     } else {
       updatedNote = [...updatedNoteData, { id: timestamp, title, tags, body }];
-      console.log('updatedNote:', updatedNote);
-      // dispatch(setNoteList(updatedNote));
+      dispatch(setNoteList(updatedNote));
       localStorage.setItem('NoteList', JSON.stringify(updatedNote));
     }
 
