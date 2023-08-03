@@ -1,27 +1,25 @@
-import { createSlice,PayloadAction } from '@reduxjs/toolkit'
-// import type { PayloadAction } from '@reduxjs/toolkit'
-// import type { RootState } from '../../store'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../../store';
+export interface TagsData {
+  value: string;
+  label: string;
+}
 
-// Define a type for the slice state
-interface TagsList { tags: string[]}
-
-// Define the initial state using that type
-const initialState: TagsList[] = []
-
+const initialState: TagsData[] = [];
 
 export const tagsSlice = createSlice({
-  name: 'notes',
-  // `createSlice` will infer the state type from the `initialState` argument
+  name: 'tags',
   initialState,
   reducers: {
-    setNoteList: (state, action: PayloadAction<TagsList[]>) => {
+    setTagsData: (state, action: PayloadAction<TagsData[]>) => {
       return action.payload;
-    }
-
+    },
   },
-})
+});
 
-export const { setNoteList } = tagsSlice.actions
+export const { setTagsData } = tagsSlice.actions;
 
+// Other code such as selectors can use the imported `RootState` type
+export const selectTag = (state: RootState) => state.tags
 
-export default tagsSlice.reducer
+export default tagsSlice.reducer;

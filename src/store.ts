@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import notesReducer from './features/todo/todoSlice'
 import modalReducer from './features/modal/modalSlice'
+import tagsReducer from './features/tags/tagsSlice'
 
 export const store = configureStore({
   reducer: {
     notes: notesReducer,
-    modal: modalReducer
+    modal: modalReducer,
+    tags: tagsReducer
   }
 })
 

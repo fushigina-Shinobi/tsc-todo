@@ -1,22 +1,23 @@
 import { MultiSelect, TextInput } from '@mantine/core';
 import NoData from '../assets/no_data.png';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store';
+import { AppDispatch } from '../store';
 import { openModal } from '../features/modal/modalSlice';
+import { selectNote } from '../features/todo/todoSlice';
+import type { RootState } from '../store';
+import { selectTag } from '../features/tags/tagsSlice';
 export default function TodoLayout({
   value,
-  setValue,
-  tagsData,
+  // setValue,
   setNoteId,
 }: {
   value: string;
   setValue: (value: string) => void;
-  tagsData: { value: string; label: string }[];
   setNoteId: (value: number | null) => void;
 }) {
-  const noteList = useSelector((store: RootState) => store.notes);
+  const noteList = useSelector((store: RootState) => selectNote(store));
+  const tagsData = useSelector((store: RootState) => selectTag(store));
   const dispatch: AppDispatch = useDispatch();
-
   return (
     <div className='flex flex-col gap-y-10 justify-center items-center'>
       <div className='flex gap-x-6 w-full ml-12'>

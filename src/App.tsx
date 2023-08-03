@@ -6,16 +6,12 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from './store';
 import { openModal } from './features/modal/modalSlice';
 import { setNoteList } from './features/todo/todoSlice';
+import { setTagsData } from './features/tags/tagsSlice';
 function App() {
   const [value, setValue] = useState<string>('');
   const [body, setBody] = useState<string>('');
   const [noteId, setNoteId] = useState<number | null>(null);
-  const [tagsData, setTagsData] = useState<{ value: string; label: string }[]>(
-    []
-  );
-  // const [noteList, setNoteList] = useState<
-  //   { id: number; title: string; tags: string[]; body: string }[]
-  // >([]);
+
   const dispatch: AppDispatch = useDispatch();
 
   const NoteData = localStorage.getItem('NoteList');
@@ -33,7 +29,7 @@ function App() {
     if (existingData) {
       updatedData = JSON.parse(existingData);
     }
-    setTagsData(updatedData);
+    dispatch(setTagsData(updatedData));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(NoteData), JSON.stringify(existingData)]);
 
@@ -55,17 +51,10 @@ function App() {
           </div>
         </div>
         <div className='self-center'>
-          <TodoLayout
-            value={value}
-            setValue={setValue}
-            tagsData={tagsData}
-            setNoteId={setNoteId}
-          />
+          <TodoLayout value={value} setValue={setValue} setNoteId={setNoteId} />
         </div>
       </div>
       <NotesModal
-        tagsData={tagsData}
-        setTagsData={setTagsData}
         setNoteId={setNoteId}
         noteId={noteId}
         value={value}

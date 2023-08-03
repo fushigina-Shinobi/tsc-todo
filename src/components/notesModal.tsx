@@ -4,9 +4,8 @@ import { useEffect } from 'react';
 import { closeModal } from '../features/modal/modalSlice';
 import { AppDispatch, RootState } from '../store';
 import { setNoteList } from '../features/todo/todoSlice';
+import { setTagsData, TagsData } from '../features/tags/tagsSlice';
 const NotesModal = ({
-  tagsData,
-  setTagsData,
   setNoteId,
   noteId,
   setValue,
@@ -18,10 +17,6 @@ const NotesModal = ({
   setValue: (value: string) => void;
   body: string;
   setBody: (value: string) => void;
-  tagsData: { value: string; label: string }[];
-  setTagsData: React.Dispatch<
-    React.SetStateAction<{ value: string; label: string }[]>
-  >;
   setNoteId: (value: number | null) => void;
   noteId: number | null;
 }) => {
@@ -72,11 +67,11 @@ const NotesModal = ({
 
     const getTags = [...updatedData, ...tags];
     const updatedTags = Array.from(new Set(getTags));
-    setTagsData(updatedTags);
+    dispatch(setTagsData(updatedTags));
     localStorage.setItem('TagList', JSON.stringify(updatedTags));
 
     // Clear the form fields if neededs
-    // setValue('');
+    setValue('');
     // setData([]);
 
     // Close the modal if needed
@@ -104,10 +99,13 @@ const NotesModal = ({
 
     const getTags = [...updatedData];
     if (noteId && updatedNoteData) {
+      //filter tags and showcase when editing
       console.log(getTags, 'gettags');
       updatedNoteData?.filter((note) => {
         if (note?.id === noteId) {
-          setTagsData(note?.tags.map((tag) => ({ value: tag, label: tag })));
+          dispatch(
+            setTagsData(note?.tags.map((tag) => ({ value: tag, label: tag })))
+          );
           setValue(note?.title);
           setBody(note?.body);
         }
@@ -116,6 +114,8 @@ const NotesModal = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [noteId]);
+
+  const tagsData = useSelector((store: RootState) => store.tags);
 
   return (
     <>
@@ -130,7 +130,7 @@ const NotesModal = ({
           if (existingData) {
             updatedData = JSON.parse(existingData);
           }
-          setTagsData(updatedData);
+          dispatch(setTagsData(updatedData));
           setValue('');
           setBody('');
         }}
@@ -161,14 +161,10 @@ const NotesModal = ({
                 defaultValue={tagsData.map((item) => item.value)}
                 getCreateLabel={(query) => `+ Create ${query}`}
                 onCreate={(query) => {
-                  const item = { value: query, label: query };
-                  setTagsData((current: { value: string; label: string }[]) => {
-                    const updatedData = [...current, item];
-                    return updatedData;
-                  });
+                  const item: TagsData = { value: query, label: query };
+                  dispatch(setTagsData([...tagsData, item]));
                   return item;
                 }}
-                // onChange={(e) => setTagsData(e.values)}
                 className='w-2/4'
                 classNames={{ label: 'text-2xl font-normal' }}
               />
